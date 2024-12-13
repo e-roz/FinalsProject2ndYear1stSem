@@ -42,10 +42,8 @@ public class LoginController {
             }catch (IOException e){
                 System.out.println("error" +e.getMessage());
             }
-
         }
     }
-
     private static final Map<String, String> credentials = new HashMap<>();
     static { //-> admin credentials
         credentials.put("admin", "password");

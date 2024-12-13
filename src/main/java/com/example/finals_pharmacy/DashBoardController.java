@@ -8,7 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
@@ -68,34 +70,47 @@ public class DashBoardController implements Initializable {
         quantityColumn.setCellValueFactory(new PropertyValueFactory<Medicine, Double>("Quantity"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<Medicine, Double>("price"));
     }
-    public void add(ActionEvent e) {
-        Medicine medicine = new Medicine(medicineIDField.getText(),
-                brandField.getText(), productNameField.getText(), Double.parseDouble(priceField.getText()),
-                Double.parseDouble(quantityField.getText()));
+    public void add(ActionEvent e) throws IOException {
+        if(!medicineIDField.getText().isEmpty()|| !brandField.getText().isEmpty()|| !productNameField.getText().isEmpty()
+                || !priceField.getText().isEmpty() ||! priceField.getText().isEmpty()){ //-> c n check kung kumpleto yung information na inilagay ng user. If not -> false.
 
-        inventoryTable.getItems().add(medicine); //-> add the elements in the tableView node
+            Medicine medicine = new Medicine(medicineIDField.getText(),
+                    brandField.getText(), productNameField.getText(), Double.parseDouble(priceField.getText()),
+                    Double.parseDouble(quantityField.getText()));
+            inventoryTable.getItems().add(medicine); //-> add the elements in the tableView node
+            medicineIDField.clear();
+            brandField.clear();
+            productNameField.clear();
+            priceField.clear();
+            quantityField.clear();
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setContentText("Tanginamo");
+            alert.show();
+        }
 
-        medicineIDField.clear();
-        brandField.clear();
-        productNameField.clear();
-        priceField.clear();
-        quantityField.clear();
     }
     public void remove(ActionEvent event){
         TableView.TableViewSelectionModel<Medicine> selectionModel = inventoryTable.getSelectionModel();
         if(selectionModel.isEmpty()){
             Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText("BOBO ka ba?");
+            alert.setContentText("Pumili ka ng i d delete tanga ka ba");
             alert.show();
-            alert.setHeaderText("Error deleting record.");
-            alert.setContentText("Record not found.");
         }
+
         ObservableList<Integer> list = selectionModel.getSelectedIndices();
         Integer[] selectedIndices = new Integer[list.size()];
         selectedIndices = list.toArray(selectedIndices);
+
         Arrays.sort(selectedIndices);
+
         for(int i = selectedIndices.length - 1; i >= 0; i--){
-            selectionModel.clearSelection(selectedIndices[i]);
+            selectionModel.clearSelection(selectedIndices[i].intValue());
             inventoryTable.getItems().remove(selectedIndices[i].intValue());
         }
     }
+
+
 }
+
