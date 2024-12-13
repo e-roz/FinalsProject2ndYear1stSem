@@ -1,20 +1,29 @@
 package com.example.finals_pharmacy;
 
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-public class LoginController {
+public class LoginController implements Initializable {
     @FXML
     Button loginBtn;
     @FXML
@@ -23,6 +32,9 @@ public class LoginController {
     TextField userNameField;
     @FXML
     PasswordField passwordField;
+
+    @FXML
+    ImageView melody;
 
     public void LogIn(ActionEvent event) {
         String userName = userNameField.getText();
@@ -61,4 +73,23 @@ public class LoginController {
         alert.show();
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle){
+        TranslateTransition translate = new TranslateTransition();
+        //RotateTransition rotate = new RotateTransition();
+        //rotate.setNode(melody);
+        translate.setNode(melody);
+        translate.setDuration(Duration.millis(1000));
+        translate.setCycleCount(TranslateTransition.INDEFINITE);
+        translate.setByY(250);
+        translate.setAutoReverse(true);
+        translate.play();
+        /*rotate.setDuration(Duration.millis(1000));
+        rotate.setCycleCount(TranslateTransition.INDEFINITE);
+        rotate.setInterpolator(Interpolator.LINEAR);
+        rotate.setAxis(Rotate.Z_AXIS);
+        rotate.setByAngle(360);
+        rotate.play();*/
+
+    }
 }
