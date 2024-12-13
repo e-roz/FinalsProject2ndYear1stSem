@@ -1,0 +1,27 @@
+#rightPane{
+    -fx-background-color: Pink;
+}
+#navPane{
+    -fx-background-color: d6f480;
+    -fx-border: 0,0,.1,0;
+    -fx-border-color: green;
+}
+#leftPane{
+    -fx-background-color: #c7d995;
+}
+#CRUDPane{
+    -fx-background-color: #d8edc5;
+    -fx-border-radius: 10px;
+    -fx-border-color: Green;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+}
+#rectangleInventory{
+     -fx-border-radius: 10px;
+}
+#logoutBtn{
+    -fx-background-color: transparent;
+}
+#logoutBtn:hover{
+    -fx-background-color: d6f480;
+}
