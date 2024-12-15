@@ -4,17 +4,20 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class DashBoardController implements Initializable {
+    @FXML
+    public PieChart pieChart;
     @FXML
     public AnchorPane leftPane;
     @FXML
@@ -22,17 +25,9 @@ public class DashBoardController implements Initializable {
     @FXML
     AnchorPane CRUDPane = new AnchorPane();
     @FXML
-    private ChoiceBox<String> choiceType;
-    @FXML
-    private ChoiceBox<String> choiceStatus;
-    @FXML
     private Button addBtn;
     @FXML
     private Button deleteBtn;
-    @FXML
-    private Button clearBtn;
-    @FXML
-    private Button updateBtn;
     @FXML
     private TableView<Medicine> inventoryTable;
     @FXML
@@ -42,13 +37,9 @@ public class DashBoardController implements Initializable {
     @FXML
     private TableColumn<Medicine, String> productNameColumn;
     @FXML
-    private TableColumn typeColumn;
+    private TableColumn<Medicine, String> priceColumn;
     @FXML
-    private TableColumn statusColumn;
-    @FXML
-    private TableColumn<Medicine, Double> priceColumn;
-    @FXML
-    TableColumn<Medicine, Double> quantityColumn;
+    TableColumn<Medicine, String> quantityColumn;
     @FXML
     private TextField medicineIDField;
     @FXML
@@ -59,30 +50,42 @@ public class DashBoardController implements Initializable {
     private TextField priceField;
     @FXML
     private TextField quantityField;
+
+    private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //choiceType.getItems().addAll(medicine);
-        //choiceStatus.getItems().addAll(status);
-        //-> inadd lang yung mga items sa string doon sa choiceBox
+
         medicineIDColumn.setCellValueFactory(new PropertyValueFactory<Medicine, String>("id"));
         brandNameColumn.setCellValueFactory(new PropertyValueFactory<Medicine, String>("brandName"));
         productNameColumn.setCellValueFactory(new PropertyValueFactory<Medicine, String>("name"));
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<Medicine, Double>("Quantity"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<Medicine, Double>("price"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<Medicine, String>("Quantity"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<Medicine, String>("price"));
+
+        pieChart.setData(pieChartData);
+        edit();
     }
+
+
     public void add(ActionEvent e) throws IOException {
         if(!medicineIDField.getText().isEmpty()|| !brandField.getText().isEmpty()|| !productNameField.getText().isEmpty()
                 || !priceField.getText().isEmpty() ||! priceField.getText().isEmpty()){ //-> c n check kung kumpleto yung information na inilagay ng user. If not -> false.
 
             Medicine medicine = new Medicine(medicineIDField.getText(),
-                    brandField.getText(), productNameField.getText(), Double.parseDouble(priceField.getText()),
-                    Double.parseDouble(quantityField.getText()));
+                    brandField.getText(), productNameField.getText(), priceField.getText(),
+                    quantityField.getText());
             inventoryTable.getItems().add(medicine); //-> add the elements in the tableView node
+
+            String combinedName = medicine.getName();
+            pieChartData.add(new PieChart.Data(combinedName, Double.parseDouble(quantityField.getText())));
+
+            System.out.println(pieChartData);
+
             medicineIDField.clear();
             brandField.clear();
             productNameField.clear();
             priceField.clear();
             quantityField.clear();
+
         }else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setContentText("Tanginamo");
@@ -98,19 +101,38 @@ public class DashBoardController implements Initializable {
             alert.setContentText("Pumili ka ng i d delete tanga ka ba");
             alert.show();
         }
-
-        ObservableList<Integer> list = selectionModel.getSelectedIndices();
-        Integer[] selectedIndices = new Integer[list.size()];
-        selectedIndices = list.toArray(selectedIndices);
-
-        Arrays.sort(selectedIndices);
-
-        for(int i = selectedIndices.length - 1; i >= 0; i--){
-            selectionModel.clearSelection(selectedIndices[i].intValue());
-            inventoryTable.getItems().remove(selectedIndices[i].intValue());
-        }
+        int selectedIndex = selectionModel.getSelectedIndex();
+        Medicine medicine = inventoryTable.getItems().remove(selectedIndex);
+        // Update Pie Chart Data
+        String combinedName = medicine.getName() + " - " + medicine.getName();
+        pieChartData.removeIf(data -> equals(combinedName));
     }
-
-
+    public void edit(){
+        medicineIDColumn.setCellFactory(TextFieldTableCell.<Medicine>forTableColumn());
+        medicineIDColumn.setOnEditCommit(event ->{
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            medicine.setId(event.getNewValue());
+        } );
+        brandNameColumn.setCellFactory(TextFieldTableCell.<Medicine>forTableColumn());
+        brandNameColumn.setOnEditCommit(event ->{
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            medicine.setBrandName(event.getNewValue());
+        } );
+        productNameColumn.setCellFactory(TextFieldTableCell.<Medicine>forTableColumn());
+        productNameColumn.setOnEditCommit(event ->{
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            medicine.setName(event.getNewValue());
+        } );
+        priceColumn.setCellFactory(TextFieldTableCell.<Medicine>forTableColumn());
+        priceColumn.setOnEditCommit(event ->{
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            medicine.setId(String.valueOf(event.getNewValue()));
+        } );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Medicine>forTableColumn());
+        quantityColumn.setOnEditCommit(event ->{
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            medicine.setId(event.getNewValue());
+        } );
+    }
 }
 
