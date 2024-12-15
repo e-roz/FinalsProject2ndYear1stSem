@@ -13,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class DashBoardController implements Initializable {
@@ -51,6 +53,7 @@ public class DashBoardController implements Initializable {
     @FXML
     private TextField quantityField;
 
+    private Map<String, PieChart.Data> pieChartDataMap = new HashMap<>();
     private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -75,10 +78,12 @@ public class DashBoardController implements Initializable {
                     quantityField.getText());
             inventoryTable.getItems().add(medicine); //-> add the elements in the tableView node
 
-            String combinedName = medicine.getName();
-            pieChartData.add(new PieChart.Data(combinedName, Double.parseDouble(quantityField.getText())));
 
-            System.out.println(pieChartData);
+            String combinedName = medicine.getBrandName() + " - " + medicine.getName();
+            double quantity = Double.parseDouble(quantityField.getText()); // Handle potential parsing exceptions
+            PieChart.Data data = new PieChart.Data(combinedName, quantity);
+            pieChartData.add(data);
+            pieChartDataMap.put(combinedName, data);
 
             medicineIDField.clear();
             brandField.clear();
@@ -93,19 +98,25 @@ public class DashBoardController implements Initializable {
         }
 
     }
-    public void remove(ActionEvent event){
+
+
+    public void remove(ActionEvent event) {
         TableView.TableViewSelectionModel<Medicine> selectionModel = inventoryTable.getSelectionModel();
-        if(selectionModel.isEmpty()){
+        if (selectionModel.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText("BOBO ka ba?");
             alert.setContentText("Pumili ka ng i d delete tanga ka ba");
             alert.show();
+        } else {
+            int selectedIndex = selectionModel.getSelectedIndex();
+            Medicine medicine = inventoryTable.getItems().remove(selectedIndex);
+
+            String combinedName = medicine.getBrandName() + " - " + medicine.getName();
+            PieChart.Data dataToRemove = pieChartDataMap.remove(combinedName);
+            if (dataToRemove != null) {
+                pieChartData.remove(dataToRemove);
+            }
         }
-        int selectedIndex = selectionModel.getSelectedIndex();
-        Medicine medicine = inventoryTable.getItems().remove(selectedIndex);
-        // Update Pie Chart Data
-        String combinedName = medicine.getName() + " - " + medicine.getName();
-        pieChartData.removeIf(data -> equals(combinedName));
     }
     public void edit(){
         medicineIDColumn.setCellFactory(TextFieldTableCell.<Medicine>forTableColumn());
@@ -133,6 +144,24 @@ public class DashBoardController implements Initializable {
             Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
             medicine.setId(event.getNewValue());
         } );
+
+
+        productNameColumn.setOnEditCommit(event -> {
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            String oldName = medicine.getBrandName() + " - " + medicine.getName();
+            medicine.setName(event.getNewValue());
+            String newName = medicine.getBrandName() + " - " + medicine.getName();
+
+            PieChart.Data dataToUpdate = pieChartDataMap.get(oldName);
+            if (dataToUpdate != null) {
+                dataToUpdate.setName(newName);
+                pieChartDataMap.put(newName, dataToUpdate);
+                pieChartDataMap.remove(oldName);
+
+            }
+        });
     }
-}
+
+    }
+
 

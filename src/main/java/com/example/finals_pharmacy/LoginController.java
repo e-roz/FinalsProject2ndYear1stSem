@@ -76,20 +76,11 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
         TranslateTransition translate = new TranslateTransition();
-        //RotateTransition rotate = new RotateTransition();
-        //rotate.setNode(melody);
         translate.setNode(melody);
-        translate.setDuration(Duration.millis(1000));
+        translate.setDuration(Duration.millis(900));
         translate.setCycleCount(TranslateTransition.INDEFINITE);
-        translate.setByY(250);
+        translate.setByY(-225);
         translate.setAutoReverse(true);
         translate.play();
-        /*rotate.setDuration(Duration.millis(1000));
-        rotate.setCycleCount(TranslateTransition.INDEFINITE);
-        rotate.setInterpolator(Interpolator.LINEAR);
-        rotate.setAxis(Rotate.Z_AXIS);
-        rotate.setByAngle(360);
-        rotate.play();*/
-
     }
 }

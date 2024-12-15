@@ -1,13 +1,14 @@
+
 #rightPane{
     -fx-background-color: Pink;
 }
 #navPane{
-    -fx-background-color: d6f480;
+    -fx-background-color: #fce9f5;
     -fx-border: 0,0,.1,0;
-    -fx-border-color: green;
+    -fx-border-color: pink;
 }
 #leftPane{
-    -fx-background-color: #c7d995;
+    -fx-background-color: #f1d3f0;
 }
 #CRUDPane{
     -fx-background-color: #d8edc5;
