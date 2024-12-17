@@ -11,16 +11,16 @@
     -fx-background-color: #f1d3f0;
 }
 #CRUDPane{
-    -fx-background-color: #d8edc5;
+    -fx-background-color: #f1d3f0;
     -fx-border-radius: 10px;
-    -fx-border-color: Green;
+    -fx-border-color: Pink;
     -fx-border-width: 2px;
     -fx-border-style: solid;
 }
 #rectangleInventory{
      -fx-border-radius: 10px;
 }
-#logoutBtn{
+#logOutBtn{
     -fx-background-color: transparent;
 }
 #logoutBtn:hover{

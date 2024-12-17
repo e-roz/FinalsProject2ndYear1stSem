@@ -1,4 +1,5 @@
 package com.example.finals_pharmacy;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 public class DashBoardController implements Initializable {
+    Stage stage;
     @FXML
     public PieChart pieChart;
     @FXML
@@ -26,6 +29,8 @@ public class DashBoardController implements Initializable {
     private AnchorPane scenePane;
     @FXML
     AnchorPane CRUDPane = new AnchorPane();
+    @FXML
+    private Button logOutBtn;
     @FXML
     private Button addBtn;
     @FXML
@@ -96,7 +101,6 @@ public class DashBoardController implements Initializable {
             alert.setContentText("Tanginamo");
             alert.show();
         }
-
     }
 
 
@@ -160,8 +164,26 @@ public class DashBoardController implements Initializable {
 
             }
         });
-    }
+        quantityColumn.setOnEditCommit(event -> {
+            Medicine medicine = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            String oldQuantity= medicine.getQuantity();
+            medicine.setQuantity(event.getNewValue());
+            String newQuantity = medicine.getQuantity();
+
+            PieChart.Data dataToUpdate = pieChartDataMap.get(oldQuantity);
+            if (dataToUpdate != null) {
+                dataToUpdate.setName(newQuantity);
+                pieChartDataMap.put(newQuantity, dataToUpdate);
+                pieChartDataMap.remove(oldQuantity);
+
+            }
+        });
 
     }
+
+    public void logout(ActionEvent event){
+        Platform.exit();
+    }
+}
 
 

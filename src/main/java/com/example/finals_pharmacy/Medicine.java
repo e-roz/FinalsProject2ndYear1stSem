@@ -6,6 +6,8 @@ public class Medicine {
     private String quantity;
     private String price;
 
+    private Double Quantity;
+
     public Medicine(String id, String brandName, String name,  String price, String quantity){
         this.id = id;
         this.brandName = brandName;
@@ -13,6 +15,10 @@ public class Medicine {
         this.quantity = quantity;
         this.price = price;
     }
+    public Medicine(String quantity){
+        this.quantity = quantity;
+    }
+
     public void setName(String name){
         this.name = name;
     }
